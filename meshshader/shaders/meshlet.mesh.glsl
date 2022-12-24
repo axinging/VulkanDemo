@@ -19,8 +19,8 @@ struct Vertex
 //
 struct Vertex
 {
-	float vx, vy, vz;
-	uint8_t nx, ny, nz, nw;
+	float vx, vy, vz, vw;
+	float nx, ny, nz, nw;
 	float tu, tv;
 };
 //
@@ -50,6 +50,7 @@ void main()
 	uint mi = gl_WorkGroupID.x;
 
 	// TODO: really bad for perf; our workgroup has 1 thread!
+	
 	for (uint i = 0; i < uint(meshlets[mi].vertexCount); ++i)
 	{
 		uint vi = meshlets[mi].vertices[i];
@@ -57,11 +58,30 @@ void main()
 		vec3 position = vec3(vertices[vi].vx, vertices[vi].vy, vertices[vi].vz);
 		//vec3 position = vec3(vertices[vi].vx, vertices[vi].vy, 0.0f);
 		vec3 normal = vec3(int(vertices[vi].nx), int(vertices[vi].ny), int(vertices[vi].nz)) / 127.0 - 1.0;
-		vec2 texcoord = vec2(vertices[vi].tu, vertices[vi].tv);
+		// vec2 texcoord = vec2(vertices[vi].tu, vertices[vi].tv);
 
-		gl_MeshVerticesNV[i].gl_Position = vec4(position * vec3(1, 1, 0.5) + vec3(0, 0, 0.5), 1.0);
-		color[i] = vec4(1.0, 0.0, 0.5, 1.0);
+		// gl_MeshVerticesNV[i].gl_Position = vec4(position * vec3(1, 1, 0.5) + vec3(0, 0, 0.5), 1.0);
+		gl_MeshVerticesNV[i].gl_Position = vec4(position, 1.0);
+		color[i] = vec4(1.0, 1.0, 0.5, 1.0);
 	}
+	/*
+		const std::vector<Vertex> vertices {
+		{-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f},
+		{0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f},
+		{0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
+		{-0.5f, 0.5f,0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f}
+	};
+	*/
+	/*
+	gl_MeshVerticesNV[0].gl_Position = vec4(-0.5f, -0.5f, 0.0f, 1.0);
+	gl_MeshVerticesNV[1].gl_Position = vec4(0.5f, -0.5f, 0.0f, 1.0);
+	gl_MeshVerticesNV[2].gl_Position = vec4(0.5f, 0.5f, 0.0f, 1.0);
+	gl_MeshVerticesNV[3].gl_Position = vec4(-0.5f, 0.5f, 0.0f, 1.0);
+	color[0] = vec4(1.0, 1.0, 0.5, 1.0);
+	color[1] = vec4(1.0, 1.0, 0.5, 1.0);
+	color[2] = vec4(1.0, 1.0, 0.5, 1.0);
+	color[3] = vec4(1.0, 1.0, 0.5, 1.0);
+	*/
 
     gl_PrimitiveCountNV = uint(meshlets[mi].indexCount) / 3;
 
